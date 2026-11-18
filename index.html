@@ -1,0 +1,172 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>대타부터 골글까지</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#101827;color:#f8fafc;font-family:Arial,sans-serif}
+header{padding:25px 18px;background:#172b46;text-align:center;border-bottom:3px solid #e5b84b}
+header h1{margin:0;font-size:28px}
+header p{color:#cbd5e1;font-size:12px}
+nav{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;padding:12px;background:#111d30;position:sticky;top:0}
+button{border:0;border-radius:9px;padding:11px 14px;background:#294365;color:white;font-weight:bold;cursor:pointer}
+button:hover{background:#41658e}
+main{max-width:850px;margin:auto;padding:18px}
+.panel{background:#1b293c;border:1px solid #34445b;border-radius:14px;padding:18px;margin:14px 0}
+h2{color:#f4c75e;margin-top:0}
+input,select{width:100%;padding:12px;border-radius:8px;border:1px solid #52647b;background:#101827;color:white;margin:7px 0 14px}
+.stat{display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid #34445b}
+.big{font-size:28px;color:#f4c75e;font-weight:bold}
+.gold{color:#f4c75e}
+.hidden{display:none}
+footer{text-align:center;padding:25px;color:#94a3b8;font-size:12px}
+</style>
+</head>
+<body>
+<header>
+<h1>⚾ 대타부터 골글까지</h1>
+<p>FROM PINCH HITTER TO GOLDEN GLOVE</p>
+<p>KBO 기반 야구 인생 시뮬레이션</p>
+</header>
+<nav>
+<button onclick="show('home')">홈</button>
+<button onclick="show('career')">선수 커리어</button>
+<button onclick="show('training')">훈련</button>
+<button onclick="show('league')">KBO 구단</button>
+<button onclick="show('awards')">시상식</button>
+</nav>
+<main>
+<section id="home">
+<div class="panel">
+<h2>나만의 야구 인생</h2>
+<p>고등학교 야구부에서 시작해 KBO 최고의 선수가 되어보세요!</p>
+<label>선수 이름</label>
+<input id="playerName" placeholder="선수 이름 입력">
+<label>포지션</label>
+<select id="position">
+<option>투수</option><option>포수</option><option>1루수</option>
+<option>2루수</option><option>3루수</option><option>유격수</option><option>외야수</option>
+</select>
+<label>희망 구단</label>
+<select id="team">
+<option>LG 트윈스</option><option>두산 베어스</option>
+<option>KT 위즈</option><option>SSG 랜더스</option>
+<option>롯데 자이언츠</option><option>삼성 라이온즈</option>
+<option>KIA 타이거즈</option><option>한화 이글스</option>
+<option>NC 다이노스</option><option>키움 히어로즈</option>
+</select>
+<button onclick="createPlayer()">선수 생성하기</button>
+</div>
+<div class="panel">
+<h2>게임 목표</h2>
+<p>🏫 고교 야구 → 📋 신인 드래프트 → ⚾ 프로 2군 → 1군</p>
+<p>🇰🇷 국가대표 → 🌎 메이저리그 → 🏆 골든글러브</p>
+</div>
+</section>
+
+<section id="career" class="hidden">
+<div class="panel">
+<h2>선수 프로필</h2>
+<div id="profile">먼저 홈에서 선수를 생성하세요.</div>
+</div>
+<div class="panel">
+<h2>선수 능력치</h2>
+<div id="stats"></div>
+</div>
+</section>
+
+<section id="training" class="hidden">
+<div class="panel">
+<h2>훈련 센터</h2>
+<p>훈련을 통해 선수 능력치를 키우세요.</p>
+<p>현재 체력: <span id="energy">100</span></p>
+<button onclick="train('타격')">타격 훈련</button>
+<button onclick="train('수비')">수비 훈련</button>
+<button onclick="train('주루')">주루 훈련</button>
+<button onclick="train('투구')">투구 훈련</button>
+<button onclick="rest()">휴식하기</button>
+<p id="message">훈련을 선택하세요.</p>
+</div>
+</section>
+
+<section id="league" class="hidden">
+<div class="panel">
+<h2>🏟️ KBO 10개 구단</h2>
+<div id="teams"></div>
+</div>
+<div class="panel">
+<h2>나의 프로 진출</h2>
+<p>고교 야구부터 드래프트를 거쳐 프로 무대에 도전하세요.</p>
+<button onclick="draft()">신인 드래프트 도전</button>
+<p id="draftMessage"></p>
+</div>
+</section>
+
+<section id="awards" class="hidden">
+<div class="panel">
+<h2>🏆 야구 시상식</h2>
+<p>⭐ 올스타 선정: 시즌 성적과 실력으로 경쟁</p>
+<p>🥇 골든글러브: 포지션별 최고의 선수에게 수여</p>
+<p>👑 MVP: 최고의 시즌을 보낸 선수에게 수여</p>
+<p id="awardMessage">아직 수상 기록이 없습니다.</p>
+</div>
+</section>
+</main>
+<footer>대타부터 골글까지 © 2026 · 야구의 꿈을 향해</footer>
+
+<script>
+const teamNames=["LG 트윈스","두산 베어스","KT 위즈","SSG 랜더스","롯데 자이언츠","삼성 라이온즈","KIA 타이거즈","한화 이글스","NC 다이노스","키움 히어로즈"];
+let player=JSON.parse(localStorage.getItem("baseballPlayer")||"null");
+function save(){localStorage.setItem("baseballPlayer",JSON.stringify(player));}
+function show(id){
+document.querySelectorAll("main section").forEach(s=>s.classList.add("hidden"));
+document.getElementById(id).classList.remove("hidden");
+if(id==="career")render();
+if(id==="league")document.getElementById("teams").innerHTML=teamNames.map(t=>"<div class='stat'>⚾ "+t+"</div>").join("");
+if(id==="training")document.getElementById("energy").textContent=player?player.energy:100;
+}
+function createPlayer(){
+let name=document.getElementById("playerName").value.trim();
+if(!name){alert("선수 이름을 입력하세요.");return;}
+player={name,position:document.getElementById("position").value,team:document.getElementById("team").value,stage:"고등학교 1학년",day:1,energy:100,training:0,bat:40,field:40,speed:40,pitch:40,draft:false,awards:[]};
+save();render();alert("선수 생성 완료! 야구 인생을 시작합니다.");show("career");
+}
+function render(){
+if(!player)return;
+document.getElementById("profile").innerHTML="<div class='big'>"+player.name+"</div><p>"+player.position+" · "+player.stage+"</p><p>희망 구단: "+player.team+"</p><p>진행 일수: "+player.day+"일</p><p>훈련 횟수: "+player.training+"회</p>";
+document.getElementById("stats").innerHTML=[["타격","bat"],["수비","field"],["주루","speed"],["투구","pitch"]].map(([n,k])=>"<div class='stat'><span>"+n+"</span><b>"+player[k]+"</b></div>").join("");
+}
+function train(type){
+if(!player){alert("먼저 선수를 생성하세요.");return;}
+if(player.energy<15){document.getElementById("message").textContent="체력이 부족합니다. 휴식하세요.";return;}
+let key={타격:"bat",수비:"field",주루:"speed",투구:"pitch"}[type];
+player[key]=Math.min(100,player[key]+2);
+player.energy-=15;player.day++;player.training++;save();
+document.getElementById("energy").textContent=player.energy;
+document.getElementById("message").textContent=type+" 훈련 완료! 능력치가 2 상승했습니다.";
+}
+function rest(){
+if(!player){alert("먼저 선수를 생성하세요.");return;}
+player.energy=Math.min(100,player.energy+35);player.day++;save();
+document.getElementById("energy").textContent=player.energy;
+document.getElementById("message").textContent="휴식 완료! 체력이 회복되었습니다.";
+}
+function draft(){
+if(!player){alert("먼저 선수를 생성하세요.");return;}
+if(player.draft){document.getElementById("draftMessage").textContent="이미 드래프트에 참가했습니다.";return;}
+if(player.training<5){document.getElementById("draftMessage").textContent="드래프트 도전 전 훈련을 5회 이상 진행하세요.";return;}
+if(Math.random()<0.5){
+player.draft=true;player.stage="프로 2군";player.energy=100;
+document.getElementById("draftMessage").textContent="축하합니다! "+player.team+"에 지명되어 프로 2군에 입단했습니다!";
+}else{
+document.getElementById("draftMessage").textContent="아쉽게도 이번 드래프트에서 지명받지 못했습니다. 더 훈련해 보세요.";
+}
+save();render();
+}
+show("home");
+</script>
+</body>
+</html>
